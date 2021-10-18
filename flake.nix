@@ -19,6 +19,9 @@
       defaultModule = import ./minimal.nix;
     in {
       nixosModule = defaultModule;
+      nixosModules = {
+        default = defaultModule;
+      };
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [
