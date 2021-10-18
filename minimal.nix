@@ -46,11 +46,11 @@
     recommendedTlsSettings = true;
     recommendedOptimisation = true;
     recommendedProxySettings = true;
-    virtualHosts."bot" = {
-      addSSL = true;
-      enableACME = true;
-      locations."/" = { proxyPass = "http://localhost:3000"; };
-    };
+    # virtualHosts."bot" = {
+      # addSSL = true;
+      # enableACME = true;
+      # locations."/" = { proxyPass = "http://localhost:3000"; };
+    # };
   };
 
   virtualisation.docker.enable = false;
@@ -61,40 +61,18 @@
     defaultNetwork.dnsname.enable = true;
   };
 
-  users = {
-    mutableUsers = false;
-    users = {
-      hugosum = {
-        name = "hugosum";
-        isNormalUser = true;
-        home = "/home/hugosum";
-        extraGroups = [
-          "wheel"
-          "networkmanager"
-          "docker"
-          "input"
-          "video"
-          "audio"
-          "sound"
-          "podman"
-        ];
-        hashedPassword =
-          "$6$pHSJA2UTMz$Z5IS7T6E67bshhmPfcAQRRKgbEuOelR23SiB5Os0YqUqX.oDl5P/nhnKbSAYmiU1mHn01tJ90HD11dYQpg1iN0";
-      };
-    };
-  };
-
   networking.useDHCP = false;
   networking.firewall.allowedTCPPorts = [ 80 443 ];
 
   services.openssh = {
     enable = true;
+    permitRootLogin = "yes";
     banner = "";
   };
 
   security.acme = {
     acceptTerms = true;
-    email = "hugosum.dev@protonmail.com";
+    # email = "hugosum.dev@protonmail.com";
   };
 
   system.autoUpgrade.enable = false;
