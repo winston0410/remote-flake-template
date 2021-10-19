@@ -46,11 +46,6 @@
     recommendedTlsSettings = true;
     recommendedOptimisation = true;
     recommendedProxySettings = true;
-    # virtualHosts."bot" = {
-    # addSSL = true;
-    # enableACME = true;
-    # locations."/" = { proxyPass = "http://localhost:3000"; };
-    # };
   };
 
   #NOTE Use podman as the backend of oci-containers
@@ -68,7 +63,6 @@
 
   security.acme = {
     acceptTerms = true;
-    # email = "hugosum.dev@protonmail.com";
   };
 
   system.autoUpgrade.enable = false;
