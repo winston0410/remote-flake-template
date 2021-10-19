@@ -2,11 +2,8 @@
   # Use grub bootloader
   boot.loader.grub.enable = true;
   boot.loader.grub.version = 2;
-  
-  nixpkgs.config = { allowUnfree = true; };
 
-  #NOTE Expect breakage
-  environment.noXlibs = true;
+  nixpkgs.config = { allowUnfree = true; };
 
   nix = {
     package = pkgs.nixUnstable;
@@ -26,17 +23,38 @@
     };
   };
 
+  users.users = {
+    admin = {
+      name = "admin";
+      isNormalUser = true;
+      home = "/home/admin";
+      extraGroups = [ "wheel" ];
+      hashedPassword =
+        "$6$pHSJA2UTMz$Z5IS7T6E67bshhmPfcAQRRKgbEuOelR23SiB5Os0YqUqX.oDl5P/nhnKbSAYmiU1mHn01tJ90HD11dYQpg1iN0";
+    };
+  };
+
   security.sudo = {
     enable = true;
     wheelNeedsPassword = false;
   };
 
-  # Essential
-  environment.systemPackages = with pkgs; [
-    neovim
-    bottom
-    ripgrep
-  ];
+  #NOTE Essential packages
+  environment.systemPackages = with pkgs; [ neovim bottom ripgrep ];
+
+  #NOTE Essentail to set EDITOR variable
+  environment.variables = {
+    "EDITOR" = "nvim";
+    "VISUAL" = "nvim";
+  };
+
+  environment.shellAliases = {
+    "vi" = "nvim";
+    "vim" = "nvim";
+  };
+
+  #NOTE Remove all default optional packges to reduce a minimal OS
+  environment.defaultPackages = [ ];
 
   services.nginx = {
     enable = true;
@@ -46,24 +64,26 @@
     recommendedTlsSettings = true;
     recommendedOptimisation = true;
     recommendedProxySettings = true;
+    #TODO Define virtual host here
   };
 
   #NOTE Use podman as the backend of oci-containers
   virtualisation.oci-containers.backend = "podman";
+  #TODO Define containers here
 
-  networking.firewall.allowPing = false;
-
-  networking.firewall.allowedTCPPorts = [ 80 443 22 ];
-
-  services.openssh = {
-    enable = true;
-    permitRootLogin = "yes";
-    banner = "";
+  #TODO Define hostName here
+  networking.firewall = {
+    allowPing = false;
+    # Port will be opened by service automatically.
   };
 
-  security.acme = {
-    acceptTerms = true;
-  };
+  i18n.defaultLocale = "en_US.UTF-8";
+  time.timeZone = "Europe/London";
 
+  services.openssh = { enable = true; };
+
+  security.acme = { acceptTerms = true; };
+
+  system.stateVersion = "21.11";
   system.autoUpgrade.enable = false;
 })
