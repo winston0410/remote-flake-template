@@ -1,5 +1,12 @@
 ({ pkgs, ... }: {
+  # Use grub bootloader
+  boot.loader.grub.enable = true;
+  boot.loader.grub.version = 2;
+  
   nixpkgs.config = { allowUnfree = true; };
+
+  #NOTE Expect breakage
+  environment.noXlibs = true;
 
   nix = {
     package = pkgs.nixUnstable;
@@ -27,15 +34,8 @@
   # Essential
   environment.systemPackages = with pkgs; [
     neovim
-    git
-    arion
-    docker-client
-    # For better listing
-    lsd
-    # For monitoring and debugging
     bottom
     ripgrep
-    fd
   ];
 
   services.nginx = {
@@ -47,22 +47,18 @@
     recommendedOptimisation = true;
     recommendedProxySettings = true;
     # virtualHosts."bot" = {
-      # addSSL = true;
-      # enableACME = true;
-      # locations."/" = { proxyPass = "http://localhost:3000"; };
+    # addSSL = true;
+    # enableACME = true;
+    # locations."/" = { proxyPass = "http://localhost:3000"; };
     # };
   };
 
-  virtualisation.docker.enable = false;
-  virtualisation.podman = {
-    enable = true;
-    dockerSocket.enable = true;
-    dockerCompat = true;
-    defaultNetwork.dnsname.enable = true;
-  };
+  #NOTE Use podman as the backend of oci-containers
+  virtualisation.oci-containers.backend = "podman";
 
-  networking.useDHCP = false;
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
+  networking.firewall.allowPing = false;
+
+  networking.firewall.allowedTCPPorts = [ 80 443 22 ];
 
   services.openssh = {
     enable = true;
