@@ -12,6 +12,8 @@
     '';
     binaryCaches = [ "https://cache.nixos.org" ];
     trustedBinaryCaches = [ "http://cache.nixos.org" "http://hydra.nixos.org" ];
+    #REF https://github.com/serokell/deploy-rs/issues/25
+    trustedUsers = [ "@wheel" ];
     optimise = {
       automatic = true;
       dates = [ "12:00" ];
