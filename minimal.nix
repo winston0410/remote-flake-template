@@ -1,4 +1,4 @@
-({ pkgs, ... }: {
+({ pkgs, lib, ... }: {
   # Use grub bootloader
   boot.loader.grub.enable = true;
   boot.loader.grub.version = 2;
@@ -67,7 +67,7 @@
   };
 
   #NOTE Remove all default optional packges to reduce a minimal OS
-  environment.defaultPackages = [ ];
+  environment.defaultPackages = lib.mkForce [ ];
 
   services.nginx = {
     enable = true;
