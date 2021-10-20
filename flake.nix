@@ -11,9 +11,13 @@
       flake = false;
       url = "path:/etc/nixos/hardware-configuration.nix";
     };
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs = { nixpkgs.follows = "nixpkgs"; };
+    };
   };
 
-  outputs = { self, nixpkgs, hardware, home-manager, ... }:
+  outputs = { self, nixpkgs, hardware, home-manager, agenix, ... }:
     let
       system = "x86_64-linux";
       defaultModule = import ./minimal.nix;
@@ -21,6 +25,7 @@
       nixosModule = defaultModule;
       nixosModules = {
         default = defaultModule;
+        secret = agenix.nixosModules.age;
       };
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         inherit system;
