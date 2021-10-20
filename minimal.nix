@@ -9,11 +9,15 @@
     package = pkgs.nixUnstable;
     extraOptions = ''
       experimental-features = nix-command flakes
+
+      #NOTE https://nixos.org/manual/nix/unstable/command-ref/conf-file.html
+      min-free = ${builtins.toString (100 * 1024 * 1024)}
     '';
     binaryCaches = [ "https://cache.nixos.org" ];
     trustedBinaryCaches = [ "http://cache.nixos.org" "http://hydra.nixos.org" ];
     #REF https://github.com/serokell/deploy-rs/issues/25
     trustedUsers = [ "@wheel" ];
+    autoOptimiseStore = true;
     optimise = {
       automatic = true;
       dates = [ "12:00" ];
@@ -24,6 +28,13 @@
       options = "--delete-older-than 10d";
     };
   };
+
+  #TODO Define podman auto-prune
+
+  #NOTE Reduce journald size
+  services.journald.extraConfig = ''
+    SystemMaxUse=50M
+  '';
 
   users.users = {
     admin = {
@@ -42,7 +53,7 @@
   };
 
   #NOTE Essential packages
-  environment.systemPackages = with pkgs; [ neovim bottom ripgrep ];
+  environment.systemPackages = with pkgs; [ neovim bottom ];
 
   #NOTE Essentail to set EDITOR variable
   environment.variables = {
@@ -82,7 +93,10 @@
   i18n.defaultLocale = "en_US.UTF-8";
   time.timeZone = "Europe/London";
 
-  services.openssh = { enable = true; };
+  services.openssh = {
+    enable = true;
+    passwordAuthentication = false;
+  };
 
   security.acme = { acceptTerms = true; };
 
