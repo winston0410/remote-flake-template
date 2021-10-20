@@ -17,6 +17,7 @@
     trustedBinaryCaches = [ "http://cache.nixos.org" "http://hydra.nixos.org" ];
     #REF https://github.com/serokell/deploy-rs/issues/25
     trustedUsers = [ "@wheel" ];
+    allowedUsers = [ "@wheel" ];
     autoOptimiseStore = true;
     optimise = {
       automatic = true;
@@ -48,7 +49,7 @@
   };
 
   security.sudo = {
-    enable = true;
+    enable = lib.mkDefault false;
     wheelNeedsPassword = false;
   };
 
@@ -96,6 +97,15 @@
   services.openssh = {
     enable = true;
     passwordAuthentication = false;
+    challengeResponseAuthentication = false;
+    allowSFTP = lib.mkDefault false;
+    #NOTE https://christine.website/blog/paranoid-nixos-2021-07-18
+    extraConfig = ''
+      AllowTcpForwarding yes
+      AllowAgentForwarding no
+      AllowStreamLocalForwarding no
+      AuthenticationMethods publickey
+    '';
   };
 
   security.acme = { acceptTerms = true; };
