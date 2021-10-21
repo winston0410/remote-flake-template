@@ -21,7 +21,12 @@
     let
       system = "x86_64-linux";
       defaultModule = import ./minimal.nix;
+      defaultPackage = nixpkgs.lib.callPackage ./iso.nix { minimal = defaultModule; };
     in {
+      defaultPackage.${system} = defaultPackage;
+      packages.${system} = {
+        default = defaultPackage;
+      };
       nixosModule = defaultModule;
       nixosModules = {
         default = defaultModule;
