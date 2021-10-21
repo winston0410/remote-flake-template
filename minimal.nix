@@ -1,6 +1,6 @@
 ({ pkgs, lib, ... }: {
   # Use grub bootloader
-  boot.loader.grub.enable = true;
+  boot.loader.grub.enable = lib.mkDefault true;
   boot.loader.grub.version = 2;
 
   nixpkgs.config = { allowUnfree = true; };
@@ -100,11 +100,15 @@
     challengeResponseAuthentication = false;
     allowSFTP = lib.mkDefault false;
     #NOTE https://christine.website/blog/paranoid-nixos-2021-07-18
+    #NOTE https://cisofy.com/lynis/controls/SSH-7408/
     extraConfig = ''
-      AllowTcpForwarding yes
+      AllowTcpForwarding no
       AllowAgentForwarding no
       AllowStreamLocalForwarding no
       AuthenticationMethods publickey
+      MaxSessions 2
+      MaxAuthTries 3
+      ClientAliveCountMax 2
     '';
   };
 
@@ -114,4 +118,23 @@
 
   system.stateVersion = "21.11";
   system.autoUpgrade.enable = false;
+
+  #NOTE Disable unused protocal
+  environment.etc = {
+    "modprobe.d/CIS.conf".text = ''
+    install tipc true
+    install sctp true
+    install dccp true
+    install rds  true
+    '';
+  };
+
+  #NOTE Block all USB
+  services.usbguard = {
+    enable = true;
+    presentDevicePolicy = "block";
+    presentControllerPolicy = "block";
+    insertedDevicePolicy = "block";
+    implictPolicyTarget = "block";
+  };
 })
