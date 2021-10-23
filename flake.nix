@@ -15,21 +15,31 @@
       url = "github:ryantm/agenix";
       inputs = { nixpkgs.follows = "nixpkgs"; };
     };
+
+    # nixos-generator = {
+      # url = "github:nix-community/nixos-generators";
+      # inputs = { nixpkgs.follows = "nixpkgs"; };
+    # };
   };
 
-  outputs = { self, nixpkgs, hardware, home-manager, agenix, ... }:
+  outputs =
+    { self, nixpkgs, hardware, home-manager, agenix, ... }:
     let
       system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
       defaultModule = import ./minimal.nix;
-      defaultPackage = nixpkgs.lib.callPackage ./iso.nix { minimal = defaultModule; };
+      defaultPackage = pkgs.callPackage ./iso.nix {
+        minimal = ./minimal.nix;
+        nixos-generator =
+          pkgs.nixos-generator.override { nix = pkgs.nixUnstable; };
+      };
     in {
       defaultPackage.${system} = defaultPackage;
-      packages.${system} = {
-        default = defaultPackage;
-      };
+      packages.${system} = { default = defaultPackage; };
       nixosModule = defaultModule;
       nixosModules = {
         default = defaultModule;
+        backup = import ./backup.nix;
         secret = agenix.nixosModules.age;
       };
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
