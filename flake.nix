@@ -39,7 +39,6 @@
       nixosModule = defaultModule;
       nixosModules = {
         default = defaultModule;
-        backup = import ./backup.nix;
         secret = agenix.nixosModules.age;
       };
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
