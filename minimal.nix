@@ -1,3 +1,4 @@
+{ email, sshKeys, ... }:
 ({ pkgs, lib, ... }: {
   # Use grub bootloader
   boot.loader.grub.enable = lib.mkDefault true;
@@ -45,6 +46,7 @@
       extraGroups = [ "wheel" ];
       hashedPassword =
         "$6$pHSJA2UTMz$Z5IS7T6E67bshhmPfcAQRRKgbEuOelR23SiB5Os0YqUqX.oDl5P/nhnKbSAYmiU1mHn01tJ90HD11dYQpg1iN0";
+      openssh.authorizedKeys.keyFiles = sshKeys;
     };
   };
 
@@ -112,7 +114,10 @@
     '';
   };
 
-  security.acme = { acceptTerms = true; };
+  security.acme = { 
+      acceptTerms = true;
+      inherit email;
+  };
 
   documentation.enable = false;
 
@@ -122,10 +127,10 @@
   #NOTE Disable unused protocal
   environment.etc = {
     "modprobe.d/CIS.conf".text = ''
-    install tipc true
-    install sctp true
-    install dccp true
-    install rds  true
+      install tipc true
+      install sctp true
+      install dccp true
+      install rds  true
     '';
   };
 
