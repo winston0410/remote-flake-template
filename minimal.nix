@@ -48,7 +48,7 @@
         "$6$pHSJA2UTMz$Z5IS7T6E67bshhmPfcAQRRKgbEuOelR23SiB5Os0YqUqX.oDl5P/nhnKbSAYmiU1mHn01tJ90HD11dYQpg1iN0";
       openssh.authorizedKeys.keyFiles = sshKeys;
     };
-    
+
     #NOTE Overwrite the default for root
     root = {
       name = "root";
@@ -100,7 +100,7 @@
   #TODO Define hostName here
   networking.firewall = {
     allowPing = false;
-    # Port will be opened by service automatically.
+    allowedTCPPorts = [ 80 443 ];
   };
 
   i18n.defaultLocale = "en_US.UTF-8";
@@ -124,9 +124,9 @@
     '';
   };
 
-  security.acme = { 
-      acceptTerms = true;
-      inherit email;
+  security.acme = {
+    acceptTerms = true;
+    inherit email;
   };
 
   documentation.enable = false;
