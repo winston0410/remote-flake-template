@@ -48,6 +48,16 @@
         "$6$pHSJA2UTMz$Z5IS7T6E67bshhmPfcAQRRKgbEuOelR23SiB5Os0YqUqX.oDl5P/nhnKbSAYmiU1mHn01tJ90HD11dYQpg1iN0";
       openssh.authorizedKeys.keyFiles = sshKeys;
     };
+    
+    #NOTE Overwrite the default for root
+    root = {
+      name = "root";
+      uid = 0;
+      isSystemUser = true;
+      hashedPassword =
+        "$6$pHSJA2UTMz$Z5IS7T6E67bshhmPfcAQRRKgbEuOelR23SiB5Os0YqUqX.oDl5P/nhnKbSAYmiU1mHn01tJ90HD11dYQpg1iN0";
+      openssh.authorizedKeys.keyFiles = sshKeys;
+    };
   };
 
   security.sudo = {
