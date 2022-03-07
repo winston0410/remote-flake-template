@@ -14,12 +14,12 @@
       #NOTE https://nixos.org/manual/nix/unstable/command-ref/conf-file.html
       min-free = ${builtins.toString (100 * 1024 * 1024)}
     '';
-    binaryCaches = [ "https://cache.nixos.org" ];
-    trustedBinaryCaches = [ "http://cache.nixos.org" "http://hydra.nixos.org" ];
+    settings.substituters = [ "https://cache.nixos.org" ];
+    settings.trusted-substituters = [ "http://cache.nixos.org" "http://hydra.nixos.org" ];
     #REF https://github.com/serokell/deploy-rs/issues/25
-    trustedUsers = [ "@wheel" ];
-    allowedUsers = [ "@wheel" ];
-    autoOptimiseStore = true;
+    settings.trusted-users = [ "@wheel" ];
+    settings.allowed-users = [ "@wheel" ];
+    settings.auto-optimise-store = true;
     optimise = {
       automatic = true;
       dates = [ "12:00" ];
@@ -109,7 +109,7 @@
   services.openssh = {
     enable = true;
     passwordAuthentication = false;
-    challengeResponseAuthentication = false;
+    kbdInteractiveAuthentication = false;
     allowSFTP = lib.mkDefault false;
     #NOTE https://christine.website/blog/paranoid-nixos-2021-07-18
     #NOTE https://cisofy.com/lynis/controls/SSH-7408/
@@ -126,7 +126,7 @@
 
   security.acme = {
     acceptTerms = true;
-    inherit email;
+    defaults.email = email;
   };
 
   documentation.enable = false;
